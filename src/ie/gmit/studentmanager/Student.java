@@ -1,9 +1,11 @@
 package ie.gmit.studentmanager;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Student {
-	// Instance Variables
+public class Student implements Serializable {
+	private static final long serialVersionUID = 1L;
+    // Instance Variables
 	private String studentId;
 	private String firstName;
 	private String surname;
