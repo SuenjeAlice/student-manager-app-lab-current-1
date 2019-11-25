@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.Serializable;
 import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,8 +30,24 @@ public class Main extends Application implements Serializable {
 		
         
         //Load DB
-		Button buttonLoadDb = new Button("Load Database");
-		//buttonSearchStudentByName.setOnAction(e -> sm.addStudent());
+        Button buttonLoadDb = new Button("Load Database");
+        TextField tfLoadDb = new TextField();
+        tfLoadDb.setPromptText("Database Path");
+		buttonLoadDb.setOnAction(e -> {
+             try{
+                File studentDB = new File(tfLoadDb.getText());
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(studentDB));
+                sm = (StudentManager) in.readObject();
+                in.close();
+                taMyOutput.setText("Student Database Loaded");
+
+            }catch(Exception exception){
+                System.out.println("[Error] Cannot load DB. Cause: ");
+                exception.printStackTrace();
+                taMyOutput.setText("ERROR: Failed to load Students DB!");
+            }
+
+        });
 		
 		//Add Students
 		Button buttonAddStudent = new Button("Add Student");
@@ -57,7 +76,7 @@ public class Main extends Application implements Serializable {
 				
 				String studentId = tfDeleteStudent.getText();
 				sm.deleteStudentById(studentId);
-				tfAddStudent.clear();
+				tfDeleteStudent.clear();
 			}
 		});
 		
@@ -65,13 +84,13 @@ public class Main extends Application implements Serializable {
 		Button buttonSearchStudentById = new Button("Search Student");
 		TextField tfSearchStudentById = new TextField();
 		tfSearchStudentById.setPromptText("Student ID");
-		//buttonSearchStudentById.setOnAction(e -> sm.addStudent());
+		//buttonSearchStudentById.setOnAction(e -> );
 		
 		//Search Student by First Name
 		Button buttonSearchStudentByName = new Button("Search Student");
 		TextField tfSearchStudentByName = new TextField();
 		tfSearchStudentByName.setPromptText("Student First Name");
-		//buttonSearchStudentByName.setOnAction(e -> sm.addStudent());
+		//buttonSearchStudentByName.setOnAction(e -> );
 		
 		//Show Total Number of Students
 		Button buttonShowTotal = new Button("Show Total Students");
@@ -85,7 +104,7 @@ public class Main extends Application implements Serializable {
         buttonSaveDb.setOnAction(e -> {
             if(sm.findTotalStudents() > 0){
                 try{
-                    File studentDB = new File("./resources/studentsDB.ser");
+                    File studentDB = new File(tfLoadDb.getText());
                     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(studentDB));
                     out.writeObject(sm);
                     out.close();
@@ -104,7 +123,7 @@ public class Main extends Application implements Serializable {
         
         //Quit
 		Button buttonQuit = new Button("Quit");
-		//buttonSearchStudentByName.setOnAction(e -> sm.addStudent());
+		buttonQuit.setOnAction(e -> Platform.exit());
         
         //Daniels Code
 
@@ -160,7 +179,8 @@ public class Main extends Application implements Serializable {
         
         //Set Up Gridpane
 		GridPane gridPane1 = new GridPane();
-		gridPane1.add(buttonLoadDb, 0, 0);
+        gridPane1.add(buttonLoadDb, 0, 0);
+        gridPane1.add(tfLoadDb, 1, 0);
 		gridPane1.add(buttonAddStudent, 0, 1);
 		gridPane1.add(tfAddStudent, 1, 1);
 		gridPane1.add(buttonDeleteStudent, 0, 2);
@@ -172,7 +192,7 @@ public class Main extends Application implements Serializable {
 		gridPane1.add(buttonShowTotal, 0, 5);
 		gridPane1.add(tfTotalNumberOfStudents, 1, 5);
 		gridPane1.add(buttonSaveDb, 0, 6);
-		gridPane1.add(buttonQuit, 1, 6);
+		gridPane1.add(buttonQuit, 1, 8);
 		gridPane1.add(taMyOutput, 0, 7,2,1);
         
         //Daniels Code
