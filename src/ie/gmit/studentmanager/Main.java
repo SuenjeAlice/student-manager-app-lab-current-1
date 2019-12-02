@@ -84,7 +84,12 @@ public class Main extends Application implements Serializable {
 		Button buttonSearchStudentById = new Button("Search Student");
 		TextField tfSearchStudentById = new TextField();
 		tfSearchStudentById.setPromptText("Student ID");
-		//buttonSearchStudentById.setOnAction(e -> );
+		buttonSearchStudentById.setOnAction(e -> {
+			
+			Student studentObj = sm.findStudentById(tfSearchStudentById.getText());
+			taMyOutput.setText(studentObj.getStudentId());
+			
+		});
 		
 		//Search Student by First Name
 		Button buttonSearchStudentByName = new Button("Search Student");
@@ -227,5 +232,6 @@ public class Main extends Application implements Serializable {
 
 	public static void main(String[] args) {
 		launch(args);
+	
 	}
 }
